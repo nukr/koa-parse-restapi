@@ -18,104 +18,109 @@ Parse.prototype = {
   restApiKey: null,
   masterKey: null,
   sessionToken: null,
-
-  classes: function(className) {
-    var that = this;
-    return {
-      get: function(objectId, qs) {
-        qs = qs || '';
-        return that._request({
-          method: 'GET',
-          url: '/1/classes/' + className + '/' + objectId,
-          params: qs
-        });
-      },
-
-      getAll: function(qs) {
-        qs = qs || '';
-        return that._request({
-          method: 'GET',
-          url: '/1/classes/' + className,
-          params: qs
-        });
-      },
-
-      create: function(data) {
-        return that._request({
-          method: 'POST',
-          url: '/1/classes/' + className,
-          params: data
-        });
-      },
-
-      del: function() {
-        console.log(className);
-        console.log('i am del()');
-      },
-
-      update: function() {
-        console.log(className);
-        console.log('i am update()');
-      }
-
-    }
+  getObject: function(className, objectId, qs) {
+    qs = qs || '';
+    return this._request({
+      method: 'GET',
+      url: '/1/classes/' + className + '/' + objectId,
+      params: qs
+    });
   },
 
-  users: function() {
-    var that = this;
-    return {
-      login: function(userData) {
-        that.options.url = that.parseApi + '/login?username=' + userData.username + '&password=' + userData.password
-        return request(that.options);
-      },
+  getObjects: function(className, qs) {
+    qs = qs || '';
+    return this._request({
+      method: 'GET',
+      url: '/1/classes/' + className,
+      params: qs
+    });
+  },
 
-      requestPasswordReset: function(email) {
-        that.options.url = that.parseApi + '/return requestPasswordReset';
-        that.options.method = 'POST';
-        that.options.qs = {
-          email: email
-        };
-        return request(that.options);
-      },
+  createObject: function(className, data) {
+    return this._request({
+      method: 'POST',
+      url: '/1/classes/' + className,
+      params: data
+    });
+  },
 
-      create: function(userData) {
-        that.options.method = 'POST';
-        that.options.url = that.parseApi + '/users';
-        that.options.json = userData;
-        return request(that.options);
-      },
+  deleteObject: function(className, objectId) {
+    return this._request({
+      method: 'DELETE',
+      url: '/1/classes/' + className,
+      params: qs
+    });
+  },
 
-      get: function(objectId) {
-        that.options.url = that.parseApi + '/users/' + objectId;
-        return request(that.options);
-      },
+  updateObject: function(className, objectId, data) {
+    return this._request({
+      method: 'PUT',
+      url: '/1/classes/' + className,
+      params: data
+    });
+  },
 
-      getAll: function() {
-        that.options.url = that.parseApi + '/users';
-        return request(that.options);
-      },
-
-      verify: function(sessToken) {
-        that.options.url = that.parseApi + '/users/me'
-        that.options.headers['X-Parse-Session-Token'] = sessToken;
-        return request(that.options);
-      },
-
-      update: function(userData) {
-        that.options.method = 'PUT';
-        that.options.url = that.parseApi + '/users/' + userData.objectId;
-        that.options.qs = userData;
-        that.options.headers['X-Parse-Session-Token'] = sessToken;
-        return request(that.options);
-      },
-
-      del: function(userData) {
-        that.options.method = 'DELETE';
-        that.options.url = that.parseApi + '/users/' + objectId;
-        that.options.headers['X-Parse-Session-Token'] = sessToken;
-        return request(that.options);
+  loginUser: function(username, password) {
+    return this._request({
+      url: '/1/login',
+      params: {
+        username: username,
+        password: password
       }
-    }
+    })
+  },
+
+  requestPasswordReset: function(email) {
+    return this._request({
+      method: 'POST',
+      url: '/1/requestPasswordReset',
+      params: {
+        'email': email
+      }
+    });
+  },
+
+  createUser: function(data) {
+    return this._request({
+      method: 'POST',
+      url: '/1/users',
+      params: data
+    });
+  },
+
+  getUser: function(objectId, params) {
+    return this._request({
+      url: '/1/users/' + objectId,
+      params: _.isFunction(params) ? null : params
+    });
+  },
+
+  getUsers: function(params) {
+    return this._request({
+      url: '/1/users',
+      params: _.isFunction(params) ? null : params
+    });
+  },
+
+  getCurrentUser: function() {
+    return _request({
+      url: '/1/users/me'
+    });
+  },
+
+  updateUsers: function(objectId, data) {
+    return _request({
+      method: 'PUT',
+      url: '/1/users/' + objectId
+      params: data
+    })
+  },
+
+  deleteUser: function(objectId) {
+    return _request({
+      method: 'DELETE',
+      url: '/1/users/' + objectId
+    })
   },
 
   stringifyParamValues: function(params) {

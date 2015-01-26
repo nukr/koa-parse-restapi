@@ -1,6 +1,6 @@
 {
   "name": "koa-parse-restapi",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Parse.com REST API library for koa",
   "main": "index.js",
   "dependencies": {
