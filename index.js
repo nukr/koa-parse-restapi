@@ -111,7 +111,7 @@ Parse.prototype = {
   updateUsers: function(objectId, data) {
     return _request({
       method: 'PUT',
-      url: '/1/users/' + objectId
+      url: '/1/users/' + objectId,
       params: data
     })
   },
