@@ -9,6 +9,7 @@ function Parse(appId, restApiKey, sessionToken) {
   this.appId = appId;
   this.restApiKey = restApiKey;
   this.sessionToken = _.isUndefined(sessionToken) ? null : sessionToken;
+  this.masterKey = null;
 };
 
 Parse.prototype = {
@@ -145,14 +146,6 @@ Parse.prototype = {
     });
   },
 
-  /**
-   * 從這以下還沒測!!!
-   * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-   * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-   * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-   * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-   */
-
   updateRole: function (objectId, data) {
     return this._request({
       method: 'PUT',
@@ -167,6 +160,14 @@ Parse.prototype = {
       url: '/1/roles/' + objectId
     });
   },
+
+  /**
+   * 從這以下還沒測!!!
+   * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   * @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+   */
 
   uploadFile: function (filePath, fileName) {
     if (_.isFunction(fileName)) {
@@ -260,6 +261,8 @@ Parse.prototype = {
         'X-Parse-REST-API-Key': this.restApiKey
       }
     }
+    if (this.sessionToken) reqOpts.headers['X-Parse-Session-Token'] = this.sessionToken;
+    if (this.masterKey) reqOpts.headers['X-Parse-Master-Key'] = this.masterKey;
     if (opts.headers) _.extend(reqOpts.headers, opts.headers);
     if (opts.params) {
       if (opts.method === 'GET') {
