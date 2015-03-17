@@ -5,6 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "koa-request": "^1.0.0",
+    "superagent": "^1.1.0",
     "underscore": "^1.7.0"
   },
   "devDependencies": {},
