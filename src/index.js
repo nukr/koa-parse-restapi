@@ -114,25 +114,6 @@ class Parse {
     });
   }
 
-  stringifyParamValues (params) {
-    if (!params || _.isEmpty(params)) {
-      return null;
-    }
-    var values = _(params).map((value, key) => {
-      if (_.isObject(value) || _.isArray(value)) {
-        return JSON.stringify(value);
-      } else {
-        return value;
-      }
-    });
-    var keys = _(params).keys();
-    var ret = {};
-    for (var i = 0; i < keys.length; i++) {
-      ret[keys[i]] = values[i];
-    }
-    return ret;
-  }
-
   _request (opts) {
     opts = _.extend({
       method: "GET",
@@ -154,30 +135,17 @@ class Parse {
       _.extend(reqOpts.headers, opts.headers);
     }
 
-    if (opts.params) {
-      if (opts.method === "GET") {
-        opts.params = this.stringifyParamValues(opts.params);
-      }
-
-      var key = "qs";
-      if (opts.method === "POST" || opts.method === "PUT") {
-        key = "json";
-      }
-      reqOpts[key] = opts.params;
-    } else if (opts.body) {
-      reqOpts[key] = opts.body;
-    }
-
     reqOpts.url = this.API_BASE_URL + opts.url;
 
     return new Promise(function (resolve, reject) {
       superagent[reqOpts.method.toLowerCase()](reqOpts.url)
       .set(reqOpts.headers)
+      .query(opts.params)
       .end((err, res) => {
         if (err) {
           throw new Error("error");
         }
-        resolve(res.body.results);
+        resolve(res);
       });
     });
   }
