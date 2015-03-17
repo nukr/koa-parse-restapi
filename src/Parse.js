@@ -94,13 +94,13 @@ class Parse {
   }
 
   getCurrentUser () {
-    return _request({
+    return this._request({
       url: "/1/users/me"
     });
   }
 
   updateUsers (objectId, data) {
-    return _request({
+    return this._request({
       method: "PUT",
       url: "/1/users/" + objectId,
       params: data
@@ -108,7 +108,7 @@ class Parse {
   }
 
   deleteUser (objectId) {
-    return _request({
+    return this._request({
       method: "DELETE",
       url: "/1/users/" + objectId
     });
@@ -133,6 +133,10 @@ class Parse {
 
     if (opts.headers) {
       _.extend(reqOpts.headers, opts.headers);
+    }
+
+    if (this.sessionToken) {
+      _.extend(reqOpts.headers, {"X-Parse-Session-Token": this.sessionToken});
     }
 
     reqOpts.url = this.API_BASE_URL + opts.url;
