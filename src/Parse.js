@@ -1,5 +1,5 @@
 var superagent = require("superagent");
-var _ = require("underscore");
+var _ = require("lodash");
 
 class Parse {
   constructor(appId, restApiKey, sessionToken = null) {
@@ -115,7 +115,7 @@ class Parse {
   }
 
   _request (opts) {
-    opts = _.extend({
+    opts = _.assign({
       method: "GET",
       url: null,
       params: null,
@@ -132,11 +132,11 @@ class Parse {
     };
 
     if (opts.headers) {
-      _.extend(reqOpts.headers, opts.headers);
+      _.assign(reqOpts.headers, opts.headers);
     }
 
     if (this.sessionToken) {
-      _.extend(reqOpts.headers, {"X-Parse-Session-Token": this.sessionToken});
+      _.assign(reqOpts.headers, {"X-Parse-Session-Token": this.sessionToken});
     }
 
     reqOpts.url = this.API_BASE_URL + opts.url;
