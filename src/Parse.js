@@ -147,9 +147,9 @@ class Parse {
       .query(opts.params)
       .end((err, res) => {
         if (err) {
-          reject(err);
+          return reject(err);
         }
-        resolve(res);
+        return resolve(res);
       });
     });
   }
