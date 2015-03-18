@@ -147,7 +147,7 @@ class Parse {
       .query(opts.params)
       .end((err, res) => {
         if (err) {
-          throw new Error("error");
+          reject(err);
         }
         resolve(res);
       });
