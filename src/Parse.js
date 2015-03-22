@@ -12,7 +12,7 @@ class Parse {
   getObject (className, objectId, qs) {
     qs = qs || "";
     return this._request({
-      method: "GET",
+      method: "get",
       url: "/1/classes/" + className + "/" + objectId,
       params: qs
     });
@@ -21,7 +21,7 @@ class Parse {
   getObjects (className, qs) {
     qs = qs || "";
     return this._request({
-      method: "GET",
+      method: "get",
       url: "/1/classes/" + className,
       params: qs
     });
@@ -29,7 +29,7 @@ class Parse {
 
   createObject (className, data) {
     return this._request({
-      method: "POST",
+      method: "post",
       url: "/1/classes/" + className,
       params: data
     });
@@ -37,15 +37,14 @@ class Parse {
 
   deleteObject (className, objectId) {
     return this._request({
-      method: "DELETE",
-      url: "/1/classes/" + className,
-      params: qs
+      method: "del",
+      url: `/1/classes/${ className }/${ objectId }`
     });
   }
 
   updateObject (className, objectId, data) {
     return this._request({
-      method: "PUT",
+      method: "put",
       url: "/1/classes/" + className,
       params: data
     });
@@ -63,7 +62,7 @@ class Parse {
 
   requestPasswordReset (email) {
     return this._request({
-      method: "POST",
+      method: "post",
       url: "/1/requestPasswordReset",
       params: {
         "email": email
@@ -73,7 +72,7 @@ class Parse {
 
   createUser (data) {
     return this._request({
-      method: "POST",
+      method: "post",
       url: "/1/users",
       params: data
     });
@@ -101,7 +100,7 @@ class Parse {
 
   updateUsers (objectId, data) {
     return this._request({
-      method: "PUT",
+      method: "put",
       url: "/1/users/" + objectId,
       params: data
     });
@@ -109,20 +108,21 @@ class Parse {
 
   deleteUser (objectId) {
     return this._request({
-      method: "DELETE",
+      method: "del",
       url: "/1/users/" + objectId
     });
   }
 
   _request (opts) {
     opts = _.assign({
-      method: "GET",
+      method: "get",
       url: null,
       params: null,
       body: null,
       headers: null
     }, opts);
 
+    var queryOrSend = "query";
     var reqOpts = {
       method: opts.method,
       headers: {
@@ -131,20 +131,21 @@ class Parse {
       }
     };
 
-    if (opts.headers) {
-      _.assign(reqOpts.headers, opts.headers);
-    }
-
     if (this.sessionToken) {
       _.assign(reqOpts.headers, {"X-Parse-Session-Token": this.sessionToken});
+    }
+
+    if (opts.method === "put" || opts.method === "post") {
+      queryOrSend = "send";
+      _.assign(reqOpts.headers, {"Content-Type": "application/json"});
     }
 
     reqOpts.url = this.API_BASE_URL + opts.url;
 
     return new Promise(function (resolve, reject) {
-      superagent[reqOpts.method.toLowerCase()](reqOpts.url)
+      superagent[opts.method](reqOpts.url)
       .set(reqOpts.headers)
-      .query(opts.params)
+      [queryOrSend](opts.params)
       .end((err, res) => {
         if (err) {
           return reject({dump: err, message: JSON.parse( err.response.text )});
