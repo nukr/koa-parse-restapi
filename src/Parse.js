@@ -148,7 +148,7 @@ class Parse {
       [queryOrSend](opts.params)
       .end((err, res) => {
         if (err) {
-          return reject({dump: err, message: JSON.parse( err.response.text )});
+          return reject({dump: err, body: err.response.body });
         }
         return resolve(res);
       });
